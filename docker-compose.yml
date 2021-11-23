@@ -8,19 +8,20 @@ services:
     ports:
       - 3306:3306
     environment:
-       MYSQL_DATABASE: planpp
-       MYSQL_ROOT_USER: root
-       MYSQL_ROOT_PASSWORD: password
+       MYSQL_DATABASE: "${DB_NAME}"
+       MYSQL_ROOT_USER: "${DB_USER}"
+       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - .dbdata:/var/lib/mysql
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./backend/Dockerfile
     container_name: backend-planpp
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend/:/app/backend/
+      - .env:/app/backend/project/.env
     ports:
       - "8000:8000"
     depends_on:

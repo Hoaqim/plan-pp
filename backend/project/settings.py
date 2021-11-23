@@ -9,24 +9,28 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+from environ import Env
 from pathlib import Path
+
+env = Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Take environment variables from .env file
+Env.read_env()
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+# False if not in os.environ because of casting above
+DEBUG = env('DEBUG')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o-cvd65pqz63xy!24+8=^-ar#9cx$_*zagq&ya_9j)4$ld5$m!'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Raises Django's ImproperlyConfigured
+# exception if SECRET_KEY not in os.environ
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -41,7 +45,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'api',
     'django_filters',
-    #'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -74,17 +77,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'planpp',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': 'db',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
         'PORT': 3306,
     }
 }

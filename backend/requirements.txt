@@ -4,3 +4,4 @@ djangorestframework
 python-dotenv
 markdown
 django-filter
+django-environ
